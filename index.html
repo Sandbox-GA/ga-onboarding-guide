@@ -1821,6 +1821,27 @@
     });
   }
 
+  // 슬랙 딥링크: 앱으로 우선 열고, 앱 없으면 웹으로 fallback
+  document.addEventListener('DOMContentLoaded', function() {
+    const TEAM_ID = 'TMEUBKV1R';
+    document.querySelectorAll('a[href*="sandboxnetwork2.slack.com/archives/"]').forEach(function(link) {
+      const channelId = link.getAttribute('href').split('/archives/')[1].split('?')[0];
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const appUrl = 'slack://channel?team=' + TEAM_ID + '&id=' + channelId;
+        const webUrl = link.getAttribute('href');
+        let opened = false;
+        const handleBlur = function() { opened = true; clearTimeout(fallback); };
+        window.addEventListener('blur', handleBlur, { once: true });
+        const fallback = setTimeout(function() {
+          window.removeEventListener('blur', handleBlur);
+          if (!opened) window.open(webUrl, '_blank');
+        }, 1500);
+        window.location.href = appUrl;
+      });
+    });
+  });
+
 </script>
 </body>
 </html>
