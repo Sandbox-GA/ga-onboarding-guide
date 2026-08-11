@@ -1790,57 +1790,6 @@
     window.scrollTo(0, 0);
   }
 
-  // ── 체크박스 토글 + localStorage 영구화 ──
-  const CHECKLIST_STORAGE_KEY = 'ga-onboarding-checklist-v1';
-
-  function loadChecklistState() {
-    try {
-      const raw = localStorage.getItem(CHECKLIST_STORAGE_KEY);
-      return raw ? JSON.parse(raw) : {};
-    } catch (e) {
-      return {};
-    }
-  }
-
-  function saveChecklistState() {
-    const state = {};
-    document.querySelectorAll('.check-item[data-key]').forEach(item => {
-      state[item.dataset.key] = item.classList.contains('checked');
-    });
-    try {
-      localStorage.setItem(CHECKLIST_STORAGE_KEY, JSON.stringify(state));
-    } catch (e) { /* 저장 실패 시 silently */ }
-  }
-
-  function restoreChecklistState() {
-    const state = loadChecklistState();
-    document.querySelectorAll('.check-item[data-key]').forEach(item => {
-      if (state[item.dataset.key]) item.classList.add('checked');
-    });
-  }
-
-  function toggleCheck(el) {
-    el.classList.toggle('checked');
-    saveChecklistState();
-    updateProgress();
-  }
-
-  function updateProgress() {
-    const items = document.querySelectorAll('.check-item');
-    const total = items.length;
-    const checked = document.querySelectorAll('.check-item.checked').length;
-    const pct = total ? (checked / total) * 100 : 0;
-    document.getElementById('prog-bar').style.width = pct + '%';
-    document.getElementById('prog-count').textContent = checked + ' / ' + total;
-
-    // 100% 완료 시 축하 메시지
-    if (total > 0 && checked === total) {
-      document.getElementById('prog-count').style.color = '#10b981';
-    } else {
-      document.getElementById('prog-count').style.color = 'var(--blue)';
-    }
-  }
-
   // 비상대피도 층 탭 전환 (s05 카드 내부로 스코프 한정)
   function switchFloor(floor) {
     const card = document.querySelector('#s05 .card');
@@ -1873,9 +1822,6 @@
     });
   }
 
-  // 초기화
-  restoreChecklistState();
-  updateProgress();
 </script>
 </body>
 </html>
